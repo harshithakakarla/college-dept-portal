@@ -21,29 +21,26 @@ if (process.env.SESSION_SECRET.length < 32 || process.env.SESSION_SECRET.startsW
 }
 
 const app = express();
+const dbSsl = process.env.DB_SSL === 'true' ? { rejectUnauthorized: true } : undefined;
 const dbConfig = {
   host: process.env.DB_HOST,
   port: Number(process.env.DB_PORT || 3306),
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
+  ssl: dbSsl,
   connectionLimit: 10,
   waitForConnections: true,
   queueLimit: 0
 };
 const pool = mysql.createPool(dbConfig);
 const sessionStore = new MySQLStore({
-  host: dbConfig.host,
-  port: dbConfig.port,
-  user: dbConfig.user,
-  password: dbConfig.password,
-  database: dbConfig.database,
   clearExpired: true,
   checkExpirationInterval: 15 * 60 * 1000,
   expiration: 24 * 60 * 60 * 1000,
   createDatabaseTable: false,
   schema: { tableName: 'sessions' }
-});
+}, pool);
 
 app.disable('x-powered-by');
 app.use(express.json({ limit: '1mb' }));

@@ -61,6 +61,8 @@ The Express server can be deployed to Vercel with the repository connected to a 
 
 The frontend is in `public/` so Vercel can serve its static files. Deployments require a Vercel account linked to the GitHub repository.
 
+Set `DB_SSL=true` for managed databases that require TLS, including TiDB Cloud's public endpoint. Keep `DB_SSL=false` for a local MySQL server unless it is configured for TLS. The server and session store share the same TLS-enabled MySQL connection pool.
+
 The server's `/api/health` endpoint returns `{"status":"ok"}` only when its MySQL connection succeeds. If startup fails, check the `DB_*` values in `.env`, confirm MySQL is running, and grant the configured user access to the database.
 
 Opening `index.html` directly with `file://` is not supported because the browser must reach the server API. The API stores the portal's module records in MySQL's `portal_records` table and mirrors them into LocalStorage for rendering. The normalized academic tables in `schema.sql` are available for future migration; the current module CRUD API uses the JSON record table.
