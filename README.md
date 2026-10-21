@@ -55,6 +55,12 @@ Requirements: Node.js 18 or newer and MySQL 8.0.16 or newer.
 
    Alternatively, run `run_portal.bat`; it installs dependencies on first use, starts the server, waits for the MySQL health check, and opens the app.
 
+## Deploy to Vercel
+
+The Express server can be deployed to Vercel with the repository connected to a Vercel project. Set `SESSION_SECRET`, `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`, and `NODE_ENV=production` in the Vercel project's Production environment. The MySQL server must accept secure connections from Vercel; `DB_HOST=localhost` is not suitable for hosted deployment. Apply `schema.sql` to that database before using the portal.
+
+The frontend is in `public/` so Vercel can serve its static files. Deployments require a Vercel account linked to the GitHub repository.
+
 The server's `/api/health` endpoint returns `{"status":"ok"}` only when its MySQL connection succeeds. If startup fails, check the `DB_*` values in `.env`, confirm MySQL is running, and grant the configured user access to the database.
 
 Opening `index.html` directly with `file://` is not supported because the browser must reach the server API. The API stores the portal's module records in MySQL's `portal_records` table and mirrors them into LocalStorage for rendering. The normalized academic tables in `schema.sql` are available for future migration; the current module CRUD API uses the JSON record table.

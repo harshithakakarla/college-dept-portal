@@ -411,10 +411,10 @@ app.delete('/api/data/:collection/:id', requireUser, async (req, res, next) => {
   }
 });
 
-app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
-app.use('/css', express.static(path.join(__dirname, 'css')));
-app.use('/js', express.static(path.join(__dirname, 'js')));
-app.use('/assets', express.static(path.join(__dirname, 'assets')));
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
+app.use('/css', express.static(path.join(__dirname, 'public', 'css')));
+app.use('/js', express.static(path.join(__dirname, 'public', 'js')));
+app.use('/assets', express.static(path.join(__dirname, 'public', 'assets')));
 
 app.use((error, req, res, next) => {
   if (res.headersSent) return next(error);
@@ -431,7 +431,11 @@ async function start() {
   app.listen(port, () => console.log(`Portal available at http://localhost:${port}`));
 }
 
-start().catch(error => {
-  console.error('Could not start portal:', error.message);
-  process.exit(1);
-});
+if (require.main === module) {
+  start().catch(error => {
+    console.error('Could not start portal:', error.message);
+    process.exit(1);
+  });
+}
+
+module.exports = app;
